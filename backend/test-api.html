@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .test-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 10px 10px 10px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .test-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        .result.success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .result.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status.online {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Backend API Test Page</h1>
+        <div id="status" class="status">Checking backend status...</div>
+        
+        <h2>Test Endpoints</h2>
+        <button class="test-btn" onclick="testDoctors()">Test /api/doctors</button>
+        <button class="test-btn" onclick="testSpecialities()">Test /api/specialities</button>
+        <button class="test-btn" onclick="testHealth()">Test Health</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin + '/api';
+
+        async function testDoctors() {
+            showResult('Testing /api/doctors...');
+            try {
+                const response = await fetch(`${API_BASE}/doctors`);
+                const data = await response.json();
+                showResult(`✅ /api/doctors - Status: ${response.status}`, data, 'success');
+            } catch (error) {
+                showResult(`❌ /api/doctors - Error: ${error.message}`, error, 'error');
+            }
+        }
+
+        async function testSpecialities() {
+            showResult('Testing /api/specialities...');
+            try {
+                const response = await fetch(`${API_BASE}/specialities`);
+                const data = await response.json();
+                showResult(`✅ /api/specialities - Status: ${response.status}`, data, 'success');
+            } catch (error) {
+                showResult(`❌ /api/specialities - Error: ${error.message}`, error, 'error');
+            }
+        }
+
+        async function testHealth() {
+            showResult('Testing backend health...');
+            try {
+                const response = await fetch(window.location.origin);
+                const text = await response.text();
+                showResult(`✅ Backend is responding - Status: ${response.status}`, { message: 'Backend is online' }, 'success');
+                updateStatus(true);
+            } catch (error) {
+                showResult(`❌ Backend health check failed - Error: ${error.message}`, error, 'error');
+                updateStatus(false);
+            }
+        }
+
+        function showResult(message, data = null, type = '') {
+            const resultDiv = document.getElementById('result');
+            let html = `<div class="result ${type}">${message}`;
+            if (data) {
+                html += `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+            html += '</div>';
+            resultDiv.innerHTML = html;
+        }
+
+        function updateStatus(online) {
+            const statusDiv = document.getElementById('status');
+            if (online) {
+                statusDiv.className = 'status online';
+                statusDiv.textContent = '✅ Backend is ONLINE';
+            } else {
+                statusDiv.className = 'status offline';
+                statusDiv.textContent = '❌ Backend is OFFLINE';
+            }
+        }
+
+        // Auto-check health on load
+        testHealth();
+    </script>
+</body>
+</html>

@@ -81,6 +81,11 @@ app.use('/api/auth', authRoutes);
 // Register activity routes AFTER app is initialized
 app.use('/api/activity', activityRoutes);
 
+// Serve test API page
+app.get('/test', (req, res) => {
+  res.sendFile(path.join(__dirname, 'test-api.html'));
+});
+
 // Configure multer with Cloudinary storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,

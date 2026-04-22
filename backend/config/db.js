@@ -1,18 +1,29 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-    console.warn('DATABASE_URL is not set. Falling back to local PostgreSQL connection defaults.');
-}
+let pool = null;
 
-const pool = new Pool({
-    connectionString,
-    ssl: connectionString ? { rejectUnauthorized: false } : false,
-    max: 10,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000
-});
+function getPool() {
+    if (!pool) {
+        const connectionString = process.env.DATABASE_URL;
+        if (!connectionString) {
+            throw new Error('DATABASE_URL environment variable is not set');
+        }
+
+        pool = new Pool({
+            connectionString,
+            ssl: { rejectUnauthorized: false },
+            max: 10,
+            idleTimeoutMillis: 30000,
+            connectionTimeoutMillis: 10000
+        });
+
+        pool.on('error', (err) => {
+            console.error('Unexpected error on idle PostgreSQL client:', err);
+        });
+    }
+    return pool;
+}
 
 const DUPLICATE_KEY_CODE = '23505';
 
@@ -85,17 +96,10 @@ function normalizeResult(sql, result) {
 
 async function executeQuery(sql, params = []) {
     const parsedSql = convertQuestionPlaceholders(sql);
-    const result = await pool.query(parsedSql, params);
+    const currentPool = getPool();
+    const result = await currentPool.query(parsedSql, params);
     return normalizeResult(parsedSql, result);
 }
-
-pool.on('connect', () => {
-    console.log('Successfully connected to PostgreSQL database (Neon).');
-});
-
-pool.on('error', (err) => {
-    console.error('Unexpected error on idle PostgreSQL client:', err);
-});
 
 const db = {
     query: (text, params, callback) => {
@@ -124,7 +128,7 @@ const db = {
         }
     }),
     getConnection: (callback) => {
-        pool.connect()
+        getPool().connect()
             .then((client) => {
                 callback(null, {
                     release: () => client.release()
@@ -133,9 +137,11 @@ const db = {
             .catch((err) => callback(err));
     },
     on: (event, handler) => {
-        pool.on(event, handler);
+        getPool().on(event, handler);
     },
-    end: () => pool.end(),
+    end: () => {
+        if (pool) pool.end();
+    },
     config: {
         host: process.env.PGHOST || null,
         user: process.env.PGUSER || null,
