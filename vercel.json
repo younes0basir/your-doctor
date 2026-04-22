@@ -31,9 +31,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "VITE_API_URL": "",
-    "NODE_ENV": "production"
-  }
+  ]
 }
