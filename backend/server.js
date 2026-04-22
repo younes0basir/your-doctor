@@ -81,30 +81,6 @@ app.use('/api/auth', authRoutes);
 // Register activity routes AFTER app is initialized
 app.use('/api/activity', activityRoutes);
 
-// Debug: Log current DB config and test Neon connection
-console.log('Database config:', {
-    connectionString: process.env.DATABASE_URL ? '***configured***' : 'not set'
-});
-
-// Test PostgreSQL connection
-db.getConnection((err, connection) => {
-    if (err) {
-        console.error('❌ Unable to connect to Neon database:', err.message);
-    } else {
-        console.log('✅ Neon database connection successful.');
-        connection.release();
-    }
-});
-
-// Test Cloudinary connection
-cloudinary.api.ping((error, result) => {
-  if (error) {
-    console.error('Cloudinary connection error:', error)
-  } else {
-    console.log('Cloudinary connected successfully')
-  }
-})
-
 // Configure multer with Cloudinary storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
