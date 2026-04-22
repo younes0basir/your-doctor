@@ -5,13 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
-    "setup-db": "node setup-database.js",
-    "seed-doctors": "node add-fictive-doctors.js",
-    "update-images": "node fix-doctor-images.js",
-    "test-migration": "node test-migration.js",
-    "health-check": "curl http://localhost:$PORT/health || echo 'Health check failed'",
-    "production": "NODE_ENV=production node server.js"
+    "health-check": "curl http://localhost:$PORT/health || echo 'Health check failed'"
   },
   "keywords": ["doctor", "appointment", "healthcare", "api"],
   "author": "",
@@ -24,10 +18,8 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "multer": "^1.4.5-lts.1",
+    "multer-storage-cloudinary": "^4.0.0",
     "pg": "^8.11.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.22"
   },
   "engines": {
     "node": ">=16.0.0"

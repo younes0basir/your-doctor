@@ -12,8 +12,8 @@ function getPool() {
 
         pool = new Pool({
             connectionString,
-            ssl: { rejectUnauthorized: false },
-            max: 10,
+            ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+            max: 20,
             idleTimeoutMillis: 30000,
             connectionTimeoutMillis: 10000
         });
