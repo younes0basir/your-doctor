@@ -81,9 +81,21 @@ app.use('/api/auth', authRoutes);
 // Register activity routes AFTER app is initialized
 app.use('/api/activity', activityRoutes);
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'Backend is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Serve test API page
 app.get('/test', (req, res) => {
-  res.sendFile(path.join(__dirname, 'test-api.html'));
+  const fs = require('fs');
+  const html = fs.readFileSync(path.join(__dirname, 'test-api.html'), 'utf8');
+  res.setHeader('Content-Type', 'text/html');
+  res.send(html);
 });
 
 // Configure multer with Cloudinary storage
