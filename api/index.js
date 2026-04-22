@@ -1,4 +1,2 @@
-const app = require('../backend/server');
-
-// Export the Express app for Vercel serverless
-module.exports = app;
+// This file is not needed - backend should be deployed separately
+// See DEPLOYMENT_GUIDE.md for proper deployment instructions

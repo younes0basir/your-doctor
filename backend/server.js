@@ -663,7 +663,7 @@ app.use((req, res) => {
 });
 
 // Start server only if not running in serverless environment
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+if (!process.env.VERCEL) {
   server.listen(port, () => {
     console.log(`Server is running on port ${port}`)
     console.log('Available routes:');
