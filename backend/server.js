@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser')
 const cors = require('cors')
 const cloudinary = require('cloudinary').v2
 const multer = require('multer')

@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "health-check": "curl http://localhost:$PORT/health || echo 'Health check failed'"
+    "dev": "nodemon server.js",
+    "health-check": "curl http://localhost:$PORT/health || echo 'Health check failed'",
+    "postinstall": "echo 'Dependencies installed successfully'"
   },
   "keywords": ["doctor", "appointment", "healthcare", "api"],
   "author": "",
