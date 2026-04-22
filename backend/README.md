@@ -146,10 +146,14 @@ The `api/index.js` file is configured for Vercel serverless functions.
 
 1. Connect your GitHub repository
 2. Create a new Web Service
-3. Build Command: `npm install`
-4. Start Command: `npm start`
-5. Add environment variables
-6. Deploy!
+3. Configure:
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+   - **Node Version:** 20 (set in render.yaml or environment variable NODE_VERSION=20)
+4. Add environment variables
+5. Deploy!
+
+**Note:** If you encounter Node.js version errors, make sure to set `NODE_VERSION=20` in Render's environment variables.
 
 ## Project Structure
 

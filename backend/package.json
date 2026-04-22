@@ -9,12 +9,17 @@
     "health-check": "curl http://localhost:$PORT/health || echo 'Health check failed'",
     "postinstall": "echo 'Dependencies installed successfully'"
   },
-  "keywords": ["doctor", "appointment", "healthcare", "api"],
+  "keywords": [
+    "doctor",
+    "appointment",
+    "healthcare",
+    "api"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.0",
-    "cloudinary": "^1.37.0",
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -24,6 +29,6 @@
     "pg": "^8.11.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0 <21.0.0"
   }
 }
