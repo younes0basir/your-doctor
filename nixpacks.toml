@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ["nodejs-18_x", "npm-9_x"]
-
-[phases.build]
-cmds = ["cd backend && npm install"]
-
-[phases.start]
-cmds = ["cd backend && npm start"]
