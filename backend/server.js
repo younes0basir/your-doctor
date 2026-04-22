@@ -662,13 +662,15 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Start server
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
-  console.log('Available routes:');
-  app._router.stack.forEach(r => {
-    if (r.route && r.route.path) {
-      console.log(`${Object.keys(r.route.methods).join(',')} ${r.route.path}`);
-    }
+// Start server only if not running in serverless environment
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  server.listen(port, () => {
+    console.log(`Server is running on port ${port}`)
+    console.log('Available routes:');
+    app._router.stack.forEach(r => {
+      if (r.route && r.route.path) {
+        console.log(`${Object.keys(r.route.methods).join(',')} ${r.route.path}`);
+      }
+    });
   });
-});
+}
