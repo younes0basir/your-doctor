@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://your-backend-api-url.com/api/:path*"
+      "destination": "/api/index"
     },
     {
       "source": "/(.*)",
@@ -31,5 +31,9 @@
         }
       ]
     }
-  ]
+  ],
+  "env": {
+    "VITE_API_URL": "",
+    "NODE_ENV": "production"
+  }
 }
