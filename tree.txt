@@ -1,0 +1,13 @@
+admin 
+http://localhost:5173/admin-dashboard  bla login halyan kay mais hackina rasna
+
+
+docotor
+test@doctor
+123
+
+
+
+patient
+vodbo2001@gmail.com
+basir2001

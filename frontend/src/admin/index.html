@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestion des utilisateurs</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 6px;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Formulaire d'utilisateur</h2>
+  <form id="userForm">
+    <input type="text" id="nom" placeholder="Nom" required><br>
+    <input type="text" id="prenom" placeholder="Prénom" required><br>
+    <input type="number" id="age" placeholder="Âge" required><br>
+
+    <label>Sexe:</label><br>
+    <input type="radio" name="sexe" value="Homme" required> Homme
+    <input type="radio" name="sexe" value="Femme"> Femme<br>
+
+    <label>Langues parlées:</label><br>
+    <input type="checkbox" name="langues" value="Français">Français
+    <input type="checkbox" name="langues" value="Anglais">Anglais
+    <input type="checkbox" name="langues" value="Arabe">Arabe<br>
+
+    <label>Pays:</label>
+    <select id="pays">
+      <option value="Canada">Canada</option>
+      <option value="France">France</option>
+      <option value="Maroc">Maroc</option>
+    </select><br><br>
+
+    <button type="submit">Ajouter utilisateur</button>
+  </form>
+
+  <h2>Liste des utilisateurs</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Âge</th>
+        <th>Sexe</th>
+        <th>Langues</th>
+        <th>Pays</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="listeUtilisateurs"></tbody>
+  </table>
+
+  <script>
+    let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+
+    function sauvegarder() {
+      localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
+    }
+
+    function afficherUtilisateurs() {
+      const tbody = document.getElementById("listeUtilisateurs");
+      tbody.innerHTML = "";
+
+      utilisateurs.forEach((user, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${user.nom}</td>
+          <td>${user.prenom}</td>
+          <td>${user.age}</td>
+          <td>${user.sexe}</td>
+          <td>${user.langues.join(", ")}</td>
+          <td>${user.pays}</td>
+          <td>
+            <button onclick="modifierUtilisateur(${index})">Modifier</button>
+            <button onclick="supprimerUtilisateur(${index})">Supprimer</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function modifierUtilisateur(index) {
+      const user = utilisateurs[index];
+      document.getElementById("nom").value = user.nom;
+      document.getElementById("prenom").value = user.prenom;
+      document.getElementById("age").value = user.age;
+
+      // Radios sexe
+      document.querySelectorAll("input[name='sexe']").forEach(r => {
+        r.checked = r.value === user.sexe;
+      });
+
+      document.getElementById("pays").value = user.pays;
+
+      // Checkboxes langues
+      document.querySelectorAll("input[name='langues']").forEach(cb => {
+        cb.checked = user.langues.includes(cb.value);
+      });
+
+      utilisateurs.splice(index, 1);
+      sauvegarder();
+      afficherUtilisateurs();
+    }
+
+    function supprimerUtilisateur(index) {
+      utilisateurs.splice(index, 1);
+      sauvegarder();
+      afficherUtilisateurs();
+    }
+
+    document.getElementById("userForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const nom = document.getElementById("nom").value;
+      const prenom = document.getElementById("prenom").value;
+      const age = document.getElementById("age").value;
+      const sexe = document.querySelector("input[name='sexe']:checked").value;
+      const pays = document.getElementById("pays").value;
+      const langues = Array.from(document.querySelectorAll("input[name='langues']:checked")).map(cb => cb.value);
+
+      const user = { nom, prenom, age, sexe, langues, pays };
+      utilisateurs.push(user);
+      sauvegarder();
+      afficherUtilisateurs();
+      this.reset();
+    });
+
+    afficherUtilisateurs();
+  </script>
+</body>
+</html>
