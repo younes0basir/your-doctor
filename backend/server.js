@@ -11,8 +11,6 @@ const doctorRoutes = require('./routes/doctorRoutes')
 const specialityRoutes = require('./routes/specialityRoutes')
 const appointmentRoutes = require('./routes/appointments')
 const prescriptionRoutes = require('./routes/prescriptions')
-const http = require('http')
-const { Server } = require('socket.io')
 const adminRoutes = require('./routes/adminRoutes')
 const assistantRoutes = require('./routes/assistantRoutes');
 const bcrypt = require('bcrypt');
@@ -26,23 +24,15 @@ const authRoutes = require('./routes/authRoutes');
 dotenv.config()
 
 const app = express()
-const server = http.createServer(app)
 const port = process.env.PORT || 5000
 
 // Export app for serverless functions
 module.exports = app
 
 // Parse CORS origins from environment variable
-const corsOrigins = process.env.FRONTEND_URL 
+const corsOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
   : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'];
-
-const io = new Server(server, {
-  cors: {
-    origin: corsOrigins,
-    methods: ['GET', 'POST']
-  }
-})
 
 // Configure CORS
 app.use(cors({
@@ -167,23 +157,6 @@ function doctorAuth(req, res, next) {
     req.doctorId = 1;
     next();
 }
-
-// WebSocket connection handling
-io.on('connection', (socket) => {
-  console.log('A user connected');
-
-  // Join a room for specific patient updates
-  socket.on('join_patient_room', (patientId) => {
-    socket.join(`patient_${patientId}`);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-  });
-});
-
-// Make io accessible to routes
-app.set('io', io);
 
 // Register endpoint
 app.post('/api/register', (req, res) => {
@@ -664,7 +637,7 @@ app.use((req, res) => {
 
 // Start server only if not running in serverless environment
 if (!process.env.VERCEL) {
-  server.listen(port, () => {
+  app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
     console.log('Available routes:');
     app._router.stack.forEach(r => {

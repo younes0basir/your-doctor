@@ -1,2 +1,6 @@
-// This file is not needed - backend should be deployed separately
-// See DEPLOYMENT_GUIDE.md for proper deployment instructions
+const app = require('../backend/server');
+
+// Export for Vercel serverless function
+module.exports = (req, res) => {
+  app(req, res);
+};
